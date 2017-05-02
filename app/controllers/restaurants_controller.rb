@@ -7,10 +7,6 @@ class RestaurantsController < ApplicationController
     @restaurant = Restaurant.new
   end
 
-  def restaurant_params
-    params.require(:restaurant).permit(:name, :description)
-  end
-
   def create
     Restaurant.create(restaurant_params)
     redirect_to '/restaurants'
@@ -35,6 +31,11 @@ class RestaurantsController < ApplicationController
     @restaurant.destroy
     flash[:notice] = 'Restaurant deleted successfully'
     redirect_to '/restaurants'
+  end
+
+  private
+  def restaurant_params
+    params.require(:restaurant).permit(:name, :description)
   end
 
 end
