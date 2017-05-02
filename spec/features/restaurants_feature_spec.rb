@@ -44,26 +44,37 @@ context 'viewing restaurants' do
   end
 end
 
-context 'editing restaurants' do
-  before { Restaurant.create(name: 'KFC', description: 'Deep fried goodness') }
-  scenario 'let a user edit a restaurant' do
-    visit '/restaurants'
-    click_link 'Edit'
-    fill_in 'Name', with: 'Kentucky Fried Chicken'
-    fill_in 'Description', with: 'Deep fried goodness'
-    click_button 'Update Restaurant'
-    expect(page).to have_content 'Kentucky Fried Chicken'
-    expect(page).to have_content 'Deep fried goodness'
-    expect(current_path).to eq '/restaurants'
+  context 'editing restaurants' do
+    before { Restaurant.create(name: 'KFC', description: 'Deep fried goodness') }
+    scenario 'let a user edit a restaurant' do
+      visit '/restaurants'
+      click_link 'Edit'
+      fill_in 'Name', with: 'Kentucky Fried Chicken'
+      fill_in 'Description', with: 'Deep fried goodness'
+      click_button 'Update Restaurant'
+      expect(page).to have_content 'Kentucky Fried Chicken'
+      expect(page).to have_content 'Deep fried goodness'
+      expect(current_path).to eq '/restaurants'
     end
 end
 
-context 'deleting restaurants' do
-  before { Restaurant.create(name: 'KFC', description: 'Deep fried goodness') }
-  scenario 'removes a restaurant when a user clicks delete link' do
+  context 'deleting restaurants' do
+    before { Restaurant.create(name: 'KFC', description: 'Deep fried goodness') }
+    scenario 'removes a restaurant when a user clicks delete link' do
     visit '/restaurants'
     click_link 'Delete'
     expect(page).not_to have_content 'KFC'
     expect(page).to have_content 'Restaurant deleted successfully'
+  end
+
+  context 'an invalid restaurant' do
+    scenario 'does not allow a name too short' do
+      visit restaurants_path
+      click_link 'Add a restaurant'
+      fill_in 'Name', with: 'kf'
+      click_button 'Create Restaurant'
+      expect(page).not_to have_css 'h2', text: 'kf'
+      expect(page).to have_content 'error'
+    end
   end
 end
